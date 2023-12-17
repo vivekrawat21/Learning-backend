@@ -1,0 +1,22 @@
+{
+  "name": "chai-backend",
+  "version": "1.0.0",
+  "description": "backend learning",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vivekrawat21/LearningBackend.git"
+  },
+  "keywords": [
+    "javascript"
+  ],
+  "author": "vivek",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vivekrawat21/LearningBackend/issues"
+  },
+  "homepage": "https://github.com/vivekrawat21/LearningBackend#readme"
+}
