@@ -2,8 +2,10 @@
   "name": "chai-backend",
   "version": "1.0.0",
   "description": "backend learning",
+  "type": "module",
   "main": "index.js",
   "scripts": {
+    "dev":"nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/vivekrawat21/LearningBackend/issues"
   },
-  "homepage": "https://github.com/vivekrawat21/LearningBackend#readme"
+  "homepage": "https://github.com/vivekrawat21/LearningBackend#readme",
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
 }
