@@ -1,12 +1,23 @@
 // require('dotenv').config({path:'./env'}); it is lacking in code consistency
 import dotenv from 'dotenv';
 import connectDB from "./db/index.js";
+import { app } from './app.js';
 
+
+let port = process.env.PORT||8000;
 
 dotenv.config({
     path:'./env' //This is the better approach for code 
 });
-connectDB();
+connectDB()
+.then(()=>{
+    app.listen(port,()=>{
+        console.log('listening on port: '+port);
+    });
+})
+.catch((err)=>{
+    console.log("MongoDB connection faile!!"+err);
+});
 
 
 
