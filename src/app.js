@@ -24,7 +24,19 @@ app.use(express.urlencoded({extended:true,limit:"16kb"})); //extended forthe obj
 app.use(express.static("public"));  //for images and pdf vagerah
 
 // For using the cookies from the user browser we use cookies parser and perform crud operation on cookies of user browser
-app.use(cookieParser);  //for cookies
+app.use(cookieParser());  //for cookies
+
+
+//routes import
+import  userRouter from './routes/user.routes.js';
+
+
+//routes declaration
+// app.get is used when we use do not have  the routers now we use the middleware for that .
+app.use("/api/v1/users",userRouter); 
+
+// http://localhost:8000/users/register the use url will become prefix
+
 
 export { app };
 

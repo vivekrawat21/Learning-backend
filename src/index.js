@@ -2,17 +2,18 @@
 import dotenv from 'dotenv';
 import connectDB from "./db/index.js";
 import { app } from './app.js';
-
-
-let port = process.env.PORT||8000;
-
 dotenv.config({
-    path:'./env' //This is the better approach for code 
+    path:'./.env' //This is the better approach for code 
 });
+
+
+let port = process.env.PORT||5000;
+
+
 connectDB()
 .then(()=>{
     app.listen(port,()=>{
-        console.log('listening on port: '+port);
+        console.log('listening on port: '+ port);
     });
 })
 .catch((err)=>{
