@@ -14,10 +14,10 @@ connectDB()
 .then(()=>{
     app.listen(port,()=>{
         console.log('listening on port: '+ port);
-    });
+    })
 })
-.catch((err)=>{
-    console.log("MongoDB connection faile!!"+err);
+.catch((err) => {
+    console.log("MongoDB connection faile!!" + err);
 });
 
 
