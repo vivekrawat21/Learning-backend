@@ -2,7 +2,7 @@ import {asynchHandler} from '../utils/asyncHandler.js';
 
 const registerUser = asynchHandler(async(req,res)=>{
 
-     // steps for getting details form the user
+    // steps for getting details form the user
     // 1. Get the details of user from the get request of user
     // 2. validation for the details -not empty
     // 3. check if ussr already exists: check from email/username
@@ -12,9 +12,14 @@ const registerUser = asynchHandler(async(req,res)=>{
     // 7. remove password and rfresh token field from reponse..
     // 9. check for the user creation 
     // 10. return response
+
     res.status(200).json({
         message : "hello user"
     })
+
+    const {fullName,email,userName,password}=req.body;
+    console.log("email: " + email);
+    console.log("password: " );
 });
 
 export {
