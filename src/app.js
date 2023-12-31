@@ -34,6 +34,9 @@ import  userRouter from './routes/user.routes.js';
 //routes declaration
 // app.get is used when we use do not have  the routers now we use the middleware for that .
 app.use("/api/v1/users",userRouter); 
+app.get("/api/v1/users/register",(req, res, next) =>{
+    res.send("hello user")
+})
 
 // http://localhost:8000/users/register the use url will become prefix
 
