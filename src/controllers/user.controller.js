@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { uploadCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import jwt from  "jsonwebtoken"
 
 //we have to do acces and refresh token generation again and again so we make a method for it 
 const genreateAcessAndRefreshToken = async(userId)=>{
@@ -176,9 +177,58 @@ const logoutUser = asynchHandler(async (req,res) => {
 
 })
 
+const refreshAccessToken = asynchHandler(async (req,res)=>{
+  const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken ; //The second refresh token is if we are opening  in mobile phone then we have to pass the refresh token in the body  of the req 
+  if (incomingRefreshToken)
+{
+   throw new ApiError (401,"Unauthorized request");
+}
+
+ try {
+  const decodedToken = jwt.verify(
+   incomingRefreshToken
+   ,process.env.REFRESH_TOKEN_SECRET
+  )
+ 
+   const user = await User.findById(decodedToken?._id);
+ 
+   if(!user){
+     throw new ApiError(401, "Invalid refresh token")
+   }
+   if(incomingRefreshToken !== user.refreshToken){
+     throw new ApiError(401,"refresh token is expired or used");
+ 
+   }
+    
+   const {accessToken,newrefreshToken}=await genreateAcessAndRefreshToken(user._id);
+   const options = {
+     httpOnly: true,
+     secure: true
+   }
+ 
+   return res
+   .status(200)
+   .cookie("accessToke",accessToken,options)
+   .cookie("newrefreshToken",accessToken,options)
+   .json(
+     new ApiResponse(200,
+       {accessToken, 
+       refreshToken : newrefreshToken
+       },
+       "Access token refreshed successfully"
+     )
+   )
+ 
+ } catch (error) {
+  throw new ApiError(401,error?.message || "invalid refresh token");  //this catch try is not compuslary this is only for extra cautious
+  
+ }//now we have described the controller and now we have to give the endpoint to it...
+})
+
 
 export { 
   registerUser,
   loginUser,
-  logoutUser
+  logoutUser,
+  refreshAccessToken
 };
