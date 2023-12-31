@@ -21,7 +21,7 @@ catch(err){
 }
 }
 
-const registerUser = asynchHandler( async (req,res) => {
+const registerUser = asynchHandler(async (req,res) => {
   // steps for getting details form the user
   // 1. Get the details of user from the get request of user
   // 2. validation for the details -not empty
