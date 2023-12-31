@@ -102,7 +102,7 @@ const user =  await  User.create({  //databse se baat krne h
 const loginUser = asynchHandler(async(req, res)=>{
   const {email , username , password} = req.body;
 
-  if(!email || !username){
+  if(!(email || username)){
     throw new ApiError(400, "username or email is required");
   }
 
