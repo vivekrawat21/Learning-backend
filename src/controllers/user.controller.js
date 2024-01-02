@@ -173,7 +173,10 @@ const logoutUser = asynchHandler(async (req, res) => {
     .status(200)
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, { refreshToken }, "user logged out Succcessfully"));
+    .json(new ApiResponse(200,
+      {},
+      "user LoggedOut Successfully"
+    ));
 
 })
 
@@ -239,10 +242,10 @@ const dashboardUser = asynchHandler(async (req, res) => {
 })
 
 const changeCurrentUserPassword = asynchHandler(async (req, res) => {
-  const { oldPassword, newPassword, confirmPassword } = req.body;
+  const { oldPassword, newPassword,confirmedPassword } = req.body;
 
   const user = await User.findById(req.user?._id);
-  if (newPassword !== oldPassword) {
+  if (newPassword !== confirmedPassword) {
     throw new ApiError(400, "Confirmed password is not matching ")
   }
   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
