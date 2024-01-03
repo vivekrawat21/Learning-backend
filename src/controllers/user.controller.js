@@ -58,7 +58,7 @@ const registerUser = asynchHandler(async (req, res) => {
   const avatarLocalPath = req.files?.avatar[0]?.path;
   //   const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
-  let coverImageLocalPath;
+  let coverImageLocalPath;hola
   if (
     req.files &&
     Array.isArray(req.files.coverImage) &&
@@ -360,7 +360,7 @@ const updateUserCoverImage = asynchHandler(async (req, res) => {
 
 const getUserChannelProfile = asynchHandler(async (req, res) => {
   const { username } = req.params; //url se user name nikalna
-  if (!username?.trime()) {
+  if (!username?.trim()) {
     throw new ApiError(400, "username is missing");
   }
 
