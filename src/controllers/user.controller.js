@@ -350,7 +350,7 @@ const updateUserCoverImage = asynchHandler(async (req, res) => {
       },
     },
     {
-      new: true,
+      new:  true,
     }.select("-password")
   );
   return res
