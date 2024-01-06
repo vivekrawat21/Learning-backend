@@ -350,7 +350,7 @@ const updateUserCoverImage = asynchHandler(async (req, res) => {
       },
     },
     {
-      new:  true,
+      new:true,
     }.select("-password")
   );
   return res
@@ -360,9 +360,11 @@ const updateUserCoverImage = asynchHandler(async (req, res) => {
 
 const getUserChannelProfile = asynchHandler(async (req, res) => {
   const { username } = req.params; //url se user name nikalna
+  console.log(username)
   if (!username?.trim()) {
     throw new ApiError(400, "username is missing");
   }
+ 
 
   // User.find({username});
   const channel = await User.aggregate(
@@ -386,7 +388,7 @@ const getUserChannelProfile = asynchHandler(async (req, res) => {
           localField: "_id",
           foreignField: "subscriber",
           as: "subscribedTo",
-        },
+        }
       },
       {
         $addFields: {
@@ -424,7 +426,7 @@ const getUserChannelProfile = asynchHandler(async (req, res) => {
   if (!channel?.length) {
     throw new ApiError(404, "channel does not exists");
   }
-  return response
+  return res
   .status(200)
   .json(
     new ApiResponse(200,channel[0],"User channel fetched successfully")
