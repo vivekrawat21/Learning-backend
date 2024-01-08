@@ -59,7 +59,7 @@ const registerUser = asynchHandler(async (req, res) => {
   const avatarLocalPath = req.files?.avatar[0]?.path;
   //   const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
-  let coverImageLocalPath;hola
+  let coverImageLocalPath;
   if (
     req.files &&
     Array.isArray(req.files.coverImage) &&
@@ -434,8 +434,29 @@ const getUserChannelProfile = asynchHandler(async (req, res) => {
   )
 });
 
-const pusblishVideo= asynchHandler(async()=>{
+const pusblishVideo= asynchHandler(async(req, res)=>{
+  const VideoLocalPath = req.files?.avatar?.path;
+  if (!coverImageLocalPath) {
+    throw new ApiError(400, "Video file is missing");
+  }
+  const uploadedVideo = await uploadCloudinary(VideoLocalPath);
+  if (!uploadedVideo) {
+    throw new ApiError(400, "Error while uploading avatar");
+  }
 
+  const user = await User.findById(
+    req.user?._id,
+  ).select("-password -email -fullName -avatar -coverImage");
+  const owner = user;
+  const video = await Video.create({
+    //databse se baat krne h
+    videoFile : uploadedVideo.url,
+    thumnail: thumbnail.url,
+    title,
+    description,
+    duration,
+    owner
+  });
 })
 
 export {
