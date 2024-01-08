@@ -435,28 +435,50 @@ const getUserChannelProfile = asynchHandler(async (req, res) => {
 });
 
 const pusblishVideo= asynchHandler(async(req, res)=>{
-  const VideoLocalPath = req.files?.avatar?.path;
-  if (!coverImageLocalPath) {
+  const { title , description } = req.body;
+
+  if (
+    [title,description].some((field) => field?.trim() === "")
+  ) {
+    throw new ApiError(400, "All fields are required");
+  }
+  const VideoLocalPath = req.files?.videoFile[0]?.path;
+  const thumbnailLocalPath = req.files?.thumbnail[0]?.path;
+  console.log(thumbnailLocalPath);
+  console.log(VideoLocalPath)
+  if (!VideoLocalPath) {
     throw new ApiError(400, "Video file is missing");
   }
+  if (!thumbnailLocalPath) {
+    throw new ApiError(400, "thumbnail file is missing");
+  }
   const uploadedVideo = await uploadCloudinary(VideoLocalPath);
+  const thumbnail = await uploadCloudinary(thumbnailLocalPath);
   if (!uploadedVideo) {
     throw new ApiError(400, "Error while uploading avatar");
   }
+  if (!thumbnail) {
+    throw new ApiError(400, "Error while uploading avatar");
+  }
 
-  const user = await User.findById(
-    req.user?._id,
-  ).select("-password -email -fullName -avatar -coverImage");
-  const owner = user;
+
+   const owner = await req.user?._id
+
   const video = await Video.create({
     //databse se baat krne h
     videoFile : uploadedVideo.url,
-    thumnail: thumbnail.url,
+    thumbnail: thumbnail.url,
     title,
     description,
-    duration,
+    duration:0,
+    isPublished:true,
     owner
   });
+  return res
+  .status(200)
+  .json(
+    new ApiResponse(200,video,"User video uploaded")
+  )
 })
 
 export {

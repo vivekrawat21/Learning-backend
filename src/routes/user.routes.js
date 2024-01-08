@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registerUser,loginUser,logoutUser,refreshAccessToken,dashboardUser,changeCurrentUserPassword,updateAccountDetails,updateUserAvatar,updateUserCoverImage,getUserChannelProfile,} from "../controllers/user.controller.js";
+import { registerUser,loginUser,logoutUser,refreshAccessToken,dashboardUser,changeCurrentUserPassword,updateAccountDetails,updateUserAvatar,updateUserCoverImage,getUserChannelProfile,pusblishVideo} from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 const router = Router();
@@ -31,4 +31,18 @@ router.route("/update-avatar").post(verifyJWT,updateUserAvatar);
 router.route("/update-cover-image").post(verifyJWT,updateUserCoverImage);
 router.route("/profile/:username").post(getUserChannelProfile);
 
+router.route('/upload').post( //jaate hue milkr jana middle ware
+    upload.fields([
+   {
+    name :"videoFile",
+    maxCount : 1
+     },
+     {
+       name :"thumbnail",
+       maxCount : 1
+     }
+    ]),
+    verifyJWT,
+    pusblishVideo
+    )
 export default router;
