@@ -34,6 +34,10 @@ const videoSchema = new Schema(
   owner:{
     type : Schema.Types.ObjectId,
     ref: "User"
+  },
+  username:{
+    type:String,
+    required:true
   }
 
 

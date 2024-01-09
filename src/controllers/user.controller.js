@@ -463,6 +463,7 @@ const pusblishVideo= asynchHandler(async(req, res)=>{
 
 
    const owner = await req.user?._id
+   const username = await req.user?.username
 
   const video = await Video.create({
     //databse se baat krne h
@@ -472,7 +473,8 @@ const pusblishVideo= asynchHandler(async(req, res)=>{
     description,
     duration:0,
     isPublished:true,
-    owner
+    owner,
+    username :username
   });
   return res
   .status(200)
