@@ -5,6 +5,7 @@ import { Video } from "../models/video.model.js";
 import { uploadCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import {v2 as cloudinary} from "cloudinary"
 import { response } from "express";
 
 //we have to do acces and refresh token generation again and again so we make a method for it
@@ -453,6 +454,8 @@ const pusblishVideo= asynchHandler(async(req, res)=>{
     throw new ApiError(400, "thumbnail file is missing");
   }
   const uploadedVideo = await uploadCloudinary(VideoLocalPath);
+
+  
   const thumbnail = await uploadCloudinary(thumbnailLocalPath);
   if (!uploadedVideo) {
     throw new ApiError(400, "Error while uploading avatar");
@@ -460,7 +463,6 @@ const pusblishVideo= asynchHandler(async(req, res)=>{
   if (!thumbnail) {
     throw new ApiError(400, "Error while uploading avatar");
   }
-
 
    const owner = await req.user?._id
    const username = await req.user?.username
@@ -471,7 +473,7 @@ const pusblishVideo= asynchHandler(async(req, res)=>{
     thumbnail: thumbnail.url,
     title,
     description,
-    duration:0,
+    duration,
     isPublished:true,
     owner,
     username :username
