@@ -485,6 +485,7 @@ const pusblishVideo= asynchHandler(async(req, res)=>{
   )
 })
 
+//todos optimize the video uploads and how to get values from the cloudinary
 export {
   registerUser,
   loginUser,
