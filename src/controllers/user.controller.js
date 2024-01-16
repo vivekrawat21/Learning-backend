@@ -5,7 +5,7 @@ import { Video } from "../models/video.model.js";
 import { uploadCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
-import {v2 as cloudinary} from "cloudinary"
+import { v2 as cloudinary } from "cloudinary"
 import { response } from "express";
 
 //we have to do acces and refresh token generation again and again so we make a method for it
@@ -352,7 +352,7 @@ const updateUserCoverImage = asynchHandler(async (req, res) => {
       },
     },
     {
-      new:true,
+      new: true,
     }.select("-password")
   );
   return res
@@ -366,7 +366,7 @@ const getUserChannelProfile = asynchHandler(async (req, res) => {
   if (!username?.trim()) {
     throw new ApiError(400, "username is missing");
   }
- 
+
 
   // User.find({username});
   const channel = await User.aggregate(
@@ -429,17 +429,17 @@ const getUserChannelProfile = asynchHandler(async (req, res) => {
     throw new ApiError(404, "channel does not exists");
   }
   return res
-  .status(200)
-  .json(
-    new ApiResponse(200,channel[0],"User channel fetched successfully")
-  )
+    .status(200)
+    .json(
+      new ApiResponse(200, channel[0], "User channel fetched successfully")
+    )
 });
 
-const pusblishVideo= asynchHandler(async(req, res)=>{
-  const { title , description } = req.body;
+const pusblishVideo = asynchHandler(async (req, res) => {
+  const { title, description } = req.body;
 
   if (
-    [title,description].some((field) => field?.trim() === "")
+    [title, description].some((field) => field?.trim() === "")
   ) {
     throw new ApiError(400, "All fields are required");
   }
@@ -455,7 +455,7 @@ const pusblishVideo= asynchHandler(async(req, res)=>{
   }
   const uploadedVideo = await uploadCloudinary(VideoLocalPath);
 
-  
+
   const thumbnail = await uploadCloudinary(thumbnailLocalPath);
   if (!uploadedVideo) {
     throw new ApiError(400, "Error while uploading avatar");
@@ -464,28 +464,85 @@ const pusblishVideo= asynchHandler(async(req, res)=>{
     throw new ApiError(400, "Error while uploading avatar");
   }
 
-   const owner = await req.user?._id
-   const username = await req.user?.username
+  const owner = await req.user?._id
+  const username = await req.user?.username
 
   const video = await Video.create({
     //databse se baat krne h
-    videoFile : uploadedVideo.url,
+    videoFile: uploadedVideo.url,
     thumbnail: thumbnail.url,
     title,
     description,
     duration,
-    isPublished:true,
+    isPublished: true,
     owner,
-    username :username
+    username: username
   });
   return res
-  .status(200)
-  .json(
-    new ApiResponse(200,video,"User video uploaded")
-  )
+    .status(200)
+    .json(
+      new ApiResponse(200, video, "User video uploaded")
+    )
 })
 
 //todos optimize the video uploads and how to get values from the cloudinary
+
+const getWatchHistoy = asynchHandler(async (req, res) => {
+  // req.user._id //This will be the string and mongoose will automatically give the mongo db id
+  const user = await User.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.objectId(req.user._id) //THis will give the whole object id of the mongodb otherwise we just passing the  strig....
+
+      }
+    },
+    {
+      $lookup: {
+        from: "videos",
+        localField: "watchHistory",
+        foreignField: "_id",
+        as: "watchHistory",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "owner",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project:{
+                     fullName: 1,
+                     usernames: 1,
+                     avatar: 1
+                  }
+                }
+              ]
+            }
+          },
+          {
+            //for frontend ki sahuliyat k liye 
+            $addFields:{
+              owner : {
+                $first:"$owner"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ])
+  return res
+  .status(200)
+  .json(
+    new ApiResponse(
+      200,
+      user[0].watchHistory,
+      "wathchistory fetch successfully"
+    )
+  )
+})
+
 export {
   registerUser,
   loginUser,
@@ -498,5 +555,6 @@ export {
   updateUserAvatar,
   updateUserCoverImage,
   getUserChannelProfile,
-  pusblishVideo
+  pusblishVideo,
+  getWatchHistoy
 };
