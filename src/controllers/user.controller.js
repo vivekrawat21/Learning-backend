@@ -5,8 +5,6 @@ import { Video } from "../models/video.model.js";
 import { uploadCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
-import { v2 as cloudinary } from "cloudinary"
-import { response } from "express";
 
 //we have to do acces and refresh token generation again and again so we make a method for it
 const genreateAcessAndRefreshToken = async (userId) => {
@@ -275,9 +273,8 @@ const changeCurrentUserPassword = asynchHandler(async (req, res) => {
 });
 
 const getCurrentUser = asynchHandler(async (req, res) => {
-  return res
-    .status(200)
-    .json(200, req.user, "Current user fetched successfully");
+  return res.status(200)
+    .json(new ApiResponse(200, req.user, "Current user fetched successfully"));
 });
 
 const updateAccountDetails = asynchHandler(async (req, res) => {
@@ -295,7 +292,9 @@ const updateAccountDetails = asynchHandler(async (req, res) => {
       },
     },
     { new: true } //update hone k bad jo value hogi vo return ho jayegiiii.
-  ).select("-password");
+  ).select(
+    "-password -refreshToken"
+  )
 
   return res
     .status(200)
@@ -316,16 +315,17 @@ const updateUserAvatar = asynchHandler(async (req, res) => {
   }
 
   const user = await User.findByIdAndUpdate(
-    req.body._id,
+    req.user._id,
     {
       $set: {
         avatar: avatar.url,
-      },
+      }
     },
     {
       new: true,
-    }.select("-password")
-  );
+    }).select(
+      "-password -refreshToken"
+    )
   return res
     .status(200)
     .json(new ApiResponse(200, user, "avatar updated successfully"));
@@ -333,28 +333,27 @@ const updateUserAvatar = asynchHandler(async (req, res) => {
 
 const updateUserCoverImage = asynchHandler(async (req, res) => {
   const coverImageLocalPath = req.file?.path;
-
   if (!coverImageLocalPath) {
     throw new ApiError(400, "CoverImage file is missing");
   }
 
   const coverImage = await uploadCloudinary(coverImageLocalPath);
 
-  if (!avatar.url) {
+  if (!coverImage.url) {
     throw new ApiError(400, "Error while uploading coverImage");
   }
 
   const user = await User.findByIdAndUpdate(
-    req.body._id,
+    req.user._id,
     {
       $set: {
         coverImage: coverImage.url,
-      },
+      }
     },
     {
       new: true,
-    }.select("-password")
-  );
+    }
+  ).select("-password -refreshToken");
   return res
     .status(200)
     .json(new ApiResponse(200, user, "cover image updated successfully"));
@@ -435,6 +434,7 @@ const getUserChannelProfile = asynchHandler(async (req, res) => {
     )
 });
 
+
 const pusblishVideo = asynchHandler(async (req, res) => {
   const { title, description } = req.body;
 
@@ -511,10 +511,10 @@ const getWatchHistoy = asynchHandler(async (req, res) => {
               as: "owner",
               pipeline: [
                 {
-                  $project:{
-                     fullName: 1,
-                     usernames: 1,
-                     avatar: 1
+                  $project: {
+                    fullName: 1,
+                    usernames: 1,
+                    avatar: 1
                   }
                 }
               ]
@@ -522,9 +522,9 @@ const getWatchHistoy = asynchHandler(async (req, res) => {
           },
           {
             //for frontend ki sahuliyat k liye 
-            $addFields:{
-              owner : {
-                $first:"$owner"
+            $addFields: {
+              owner: {
+                $first: "$owner"
               }
             }
           }
@@ -533,14 +533,14 @@ const getWatchHistoy = asynchHandler(async (req, res) => {
     }
   ])
   return res
-  .status(200)
-  .json(
-    new ApiResponse(
-      200,
-      user[0].watchHistory,
-      "wathchistory fetch successfully"
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        user[0].watchHistory,
+        "wathchistory fetch successfully"
+      )
     )
-  )
 })
 
 export {
