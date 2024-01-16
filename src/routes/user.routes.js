@@ -1,5 +1,18 @@
 import { Router } from "express";
-import { registerUser,loginUser,logoutUser,refreshAccessToken,dashboardUser,changeCurrentUserPassword,updateAccountDetails,updateUserAvatar,updateUserCoverImage,getUserChannelProfile,pusblishVideo} from "../controllers/user.controller.js";
+import {
+   registerUser,
+   loginUser,
+   logoutUser,
+   refreshAccessToken,
+   dashboardUser,
+   changeCurrentUserPassword,
+   updateAccountDetails,
+   updateUserAvatar,
+   updateUserCoverImage,
+   getUserChannelProfile,
+   pusblishVideo,getCurrentUser,
+   getWatchHistoy
+  } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 const router = Router();
@@ -26,10 +39,12 @@ router.route("/logout").post(verifyJWT,logoutUser);
 router.route("/refresh-token").post(refreshAccessToken);  //no need for this 
 router.route("/dashboard").post(verifyJWT,dashboardUser);
 router.route("/update-password").post(verifyJWT,changeCurrentUserPassword);
-router.route("/update-user-details").post(verifyJWT,updateAccountDetails);
-router.route("/update-avatar").post(verifyJWT,updateUserAvatar);
-router.route("/update-cover-image").post(verifyJWT,updateUserCoverImage);
-router.route("/profile/:username").post(getUserChannelProfile);
+router.route("/update-user-details").patch(verifyJWT,updateAccountDetails);
+router.route("/current-user").post(verifyJWT,getCurrentUser);
+router.route("/update-avatar").patch(verifyJWT,upload.single("avatar"),updateUserAvatar);
+router.route("/update-cover-image").post(verifyJWT,update.single("/coverImage"),updateUserCoverImage);
+router.route("/c/:username").get(verifyJWT,getUserChannelProfile);
+router.route("/history").get(verifyJWT,getWatchHistoy)
 
 router.route('/upload').post( //jaate hue milkr jana middle ware
     upload.fields([
