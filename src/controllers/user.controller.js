@@ -5,6 +5,7 @@ import { Video } from "../models/video.model.js";
 import { uploadCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 //we have to do acces and refresh token generation again and again so we make a method for it
 const genreateAcessAndRefreshToken = async (userId) => {
@@ -166,9 +167,9 @@ const logoutUser = asynchHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshToken: undefined,
-      },
+      $unset: {
+        refreshToken: 1,//this removes the field from document
+      }
     },
     {
       new: true, //now he undefinded value milegi
@@ -435,7 +436,7 @@ const getUserChannelProfile = asynchHandler(async (req, res) => {
 });
 
 
-const pusblishVideo = asynchHandler(async (req, res) => {
+const publishVideo = asynchHandler(async (req, res) => {
   const { title, description } = req.body;
 
   if (
@@ -492,7 +493,7 @@ const getWatchHistoy = asynchHandler(async (req, res) => {
   const user = await User.aggregate([
     {
       $match: {
-        _id: new mongoose.Types.objectId(req.user._id) //THis will give the whole object id of the mongodb otherwise we just passing the  strig....
+        _id : new mongoose.Types.ObjectId(req.user._id) //THis will give the whole object id of the mongodb otherwise we just passing the  strig....
 
       }
     },
@@ -555,6 +556,6 @@ export {
   updateUserAvatar,
   updateUserCoverImage,
   getUserChannelProfile,
-  pusblishVideo,
+  publishVideo,
   getWatchHistoy
 };

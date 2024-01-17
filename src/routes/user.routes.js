@@ -10,7 +10,7 @@ import {
    updateUserAvatar,
    updateUserCoverImage,
    getUserChannelProfile,
-   pusblishVideo,getCurrentUser,
+   publishVideo,getCurrentUser,
    getWatchHistoy
   } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js"
@@ -58,6 +58,6 @@ router.route('/upload').post( //jaate hue milkr jana middle ware
      }
     ]),
     verifyJWT,
-    pusblishVideo
+    publishVideo
     )
 export default router;
