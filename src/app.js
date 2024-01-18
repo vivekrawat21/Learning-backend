@@ -30,6 +30,7 @@ app.use(cookieParser());  //for cookies
 //routes import
 import  userRouter from './routes/user.routes.js';
 import videoRouter from './routes/video.routes.js';
+import healthcheckRouter from './routes/heathcheck.routes.js';
 
 //routes declaration
 // app.get is used when we use do not have  the routers now we use the middleware for that .
@@ -38,7 +39,7 @@ app.use("/api/v1/users",userRouter);
 //     res.send("hello user")
 // })
 
-// app.use("/api/v1/healthcheck", healthcheckRouter)
+app.use("/api/v1/healthcheck", healthcheckRouter)
 app.use("/api/v1/users", userRouter)
 // app.use("/api/v1/tweets", tweetRouter)
 // app.use("/api/v1/subscriptions", subscriptionRouter)
