@@ -10,7 +10,7 @@ import {
    updateUserAvatar,
    updateUserCoverImage,
    getUserChannelProfile,
-   publishVideo,getCurrentUser,
+   getCurrentUser,
    getWatchHistoy
   } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js"
@@ -45,19 +45,4 @@ router.route("/update-avatar").patch(verifyJWT,upload.single("avatar"),updateUse
 router.route("/update-cover-image").patch(verifyJWT,upload.single("coverImage"),updateUserCoverImage);
 router.route("/c/:username").get(verifyJWT,getUserChannelProfile);
 router.route("/history").get(verifyJWT,getWatchHistoy)
-
-router.route('/upload').post( //jaate hue milkr jana middle ware
-    upload.fields([
-   {
-    name :"videoFile",
-    maxCount : 1
-     },
-     {
-       name :"thumbnail",
-       maxCount : 1
-     }
-    ]),
-    verifyJWT,
-    publishVideo
-    )
 export default router;
