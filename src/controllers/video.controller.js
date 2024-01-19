@@ -131,6 +131,9 @@ const updateVideo = asynchHandler(async (req, res) => {
     }
   ).select('-isPublished');
 
+  if(!video){
+    throw new ApiError(400,"No Video Found!!")
+  }
   res
     .status(200)
     .json(new ApiResponse(200, video, "video updated successfully"));
