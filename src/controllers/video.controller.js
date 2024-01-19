@@ -58,7 +58,7 @@ const getAllVideos = asynchHandler(async (req, res) => {
   const videos = await Video.find({
     owner,
   });
-  console.log(videos)
+  console.log(videos);
   if (!videos) {
     throw new ApiError(404, "no videosfound");
   }
@@ -97,12 +97,42 @@ const deleteVideo = asynchHandler(async (req, res) => {
   }
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "videos " + videoId + " deleted successfully"));
+    .json(
+      new ApiResponse(200, {}, "videos " + videoId + " deleted successfully")
+    );
 });
 
-export {
-  publishVideo,
-  getAllVideos,
-  getVideoById,
-  deleteVideo
-};
+const updateVideo = asynchHandler(async (req, res) => {
+  const { videoId } = req.params;
+  const thumbnailLocalPath = req.file?.path;
+
+  if (!thumbnailLocalPath) {
+    throw new Error(
+      400,
+      "thumbnail is required"
+    );
+  }
+
+  // console.log(thumbnailLocalPath);
+  const thumbnail = await uploadCloudinary(thumbnailLocalPath);
+  if(!thumbnail.url) {
+    throw new ApiError(400, "Error while uploading thumbnail");
+  }
+  // console.log(thumbnail.url);
+  const video = await Video.findByIdAndUpdate(
+    videoId,
+    {
+      $set: {
+        thumbnail: thumbnail.url,
+      }
+    },
+    {
+      new: true,
+    }
+  ).select('-isPublished');
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, video, "video updated successfully"));
+});
+export { publishVideo, getAllVideos, getVideoById, deleteVideo, updateVideo };
