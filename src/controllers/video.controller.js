@@ -92,13 +92,6 @@ const deleteVideo = asynchHandler(async (req, res) => {
   }
   try {
     const video = await Video.findByIdAndDelete(videoId);
-
-    if (!video) {
-      console.log("video cannot be  found");
-    }
-    else {
-      console.log("video is delted successfully");
-    }
   } catch (error) {
     console.error(`Error deleting video with ID ${videoId}:`, error);
   }
