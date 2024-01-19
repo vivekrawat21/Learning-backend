@@ -58,7 +58,7 @@ const getAllVideos = asynchHandler(async (req, res) => {
   const videos = await Video.find({
     owner,
   });
-
+  console.log(videos)
   if (!videos) {
     throw new ApiError(404, "no videosfound");
   }
@@ -76,12 +76,40 @@ const getVideoById = asynchHandler(async (req, res) => {
   }
   const video = await Video.findById(videoId).select("-isPublished");
 
+  if (!video) {
+    throw new ApiError(404, "no videosfound");
+  }
   return res
     .status(200)
     .json(new ApiResponse(200, video, "video fetched successfully"));
 });
 
-export { 
-  publishVideo,  
+const deleteVideo = asynchHandler(async (req, res) => {
+  const { videoId } = req.params;
+  // console.log(videoId);
+  if (!videoId.trim()) {
+    throw new ApiError(400, "username is missing");
+  }
+  try {
+    const video = await Video.findByIdAndDelete(videoId);
+
+    if (!video) {
+      console.log("video cannot be  found");
+    }
+    else {
+      console.log("video is delted successfully");
+    }
+  } catch (error) {
+    console.error(`Error deleting video with ID ${videoId}:`, error);
+  }
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "videos " + videoId + " deleted successfully"));
+});
+
+export {
+  publishVideo,
   getAllVideos,
-  getVideoById };
+  getVideoById,
+  deleteVideo
+};

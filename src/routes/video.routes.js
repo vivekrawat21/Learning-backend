@@ -3,7 +3,8 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 import {
      publishVideo,
      getAllVideos,
-     getVideoById
+     getVideoById,
+     deleteVideo
     } from "../controllers/video.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
@@ -30,7 +31,7 @@ router.route("/")
 
 router.route("/:videoId")
 .get(getVideoById)
-// .delete(deleteVideo)
+.delete(deleteVideo)
 // .patch(upload.single("thumbnail"),updateVideo)
 
 export default router;
