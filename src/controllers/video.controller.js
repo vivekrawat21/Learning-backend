@@ -115,7 +115,7 @@ const updateVideo = asynchHandler(async (req, res) => {
 
   // console.log(thumbnailLocalPath);
   const thumbnail = await uploadCloudinary(thumbnailLocalPath);
-  if(!thumbnail.url) {
+  if (!thumbnail.url) {
     throw new ApiError(400, "Error while uploading thumbnail");
   }
   // console.log(thumbnail.url);
@@ -131,8 +131,8 @@ const updateVideo = asynchHandler(async (req, res) => {
     }
   ).select('-isPublished');
 
-  if(!video){
-    throw new ApiError(400,"No Video Found!!")
+  if (!video) {
+    throw new ApiError(400, "No Video Found!!")
   }
   res
     .status(200)
