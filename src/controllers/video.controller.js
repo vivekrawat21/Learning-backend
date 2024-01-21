@@ -139,3 +139,5 @@ const updateVideo = asynchHandler(async (req, res) => {
     .json(new ApiResponse(200, video, "video updated successfully"));
 });
 export { publishVideo, getAllVideos, getVideoById, deleteVideo, updateVideo };
+
+// Some ToDOs: first only the user who's video is can delete and update the video only 
