@@ -3,6 +3,7 @@ import { Comment } from "../models/comment.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Video } from "../models/video.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import mongoose, {isValidObjectId} from "mongoose"
 
 const addComment = asynchHandler(async (req, res) => {
   const { content } = req.body;
@@ -79,8 +80,9 @@ const addComment = asynchHandler(async (req, res) => {
 
   const getAllcommentsofVideo = asynchHandler(async(req,res)=>{
     const {videoId} = req.params;
-    if(!videoId){
-      throw new ApiError(400,"Video id not found ")
+    const videoIdcheck = await Video.findById(videoId);
+    if(!videoIdcheck){
+      throw new ApiError(400,"video id not found in the database");
     }
     const comment = await Comment.find(
       {

@@ -4,9 +4,11 @@ import { createTweet
     // ,updateTweet
     // ,deleteTweet
 }
-from "../constants/tweets.controller.js";
+from "../controllers/tweets.controller.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
+router.use(verifyJWT);
 router.route('/').post(createTweet);
 
 export default router;
