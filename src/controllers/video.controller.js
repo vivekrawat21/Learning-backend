@@ -72,7 +72,7 @@ const getVideoById = asynchHandler(async (req, res) => {
   const { videoId } = req.params;
   // console.log(videoId);
   if (!videoId.trim()) {
-    throw new ApiError(400, "username is missing");
+    throw new ApiError(400, "videoId is missing");
   }
   const video = await Video.findById(videoId).select("-isPublished");
 
@@ -88,7 +88,7 @@ const deleteVideo = asynchHandler(async (req, res) => {
   const { videoId } = req.params;
   // console.log(videoId);
   if (!videoId.trim()) {
-    throw new ApiError(400, "username is missing");
+    throw new ApiError(400, "videoId is missing");
   }
   try {
     const video = await Video.findByIdAndDelete(videoId);

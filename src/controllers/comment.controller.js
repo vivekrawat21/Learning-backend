@@ -46,7 +46,7 @@ const addComment = asynchHandler(async (req, res) => {
   const updateComment = asynchHandler(async (req, res) => {
       const {commentId} = req.params;
       const { content } = req.body;
-      if(!commentId){
+      if(commentId.trim()==""){
         throw new ApiError(400,"comment id not found in the params");
       }
       const comment = await Comment.findByIdAndUpdate(
@@ -87,7 +87,7 @@ const addComment = asynchHandler(async (req, res) => {
     const comment = await Comment.find(
       {
       video : videoId
-    }
+     }
       );
 
       if(!comment){
